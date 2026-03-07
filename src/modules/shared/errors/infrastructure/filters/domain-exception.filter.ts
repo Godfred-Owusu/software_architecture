@@ -25,9 +25,11 @@ export class DomainExceptionFilter implements ExceptionFilter {
       USER_CANNOT_UPDATE_POST: 403,
       USER_CANNOT_DELETE_POST: 403,
       POST_ALREADY_PUBLISHED: 400,
+      USER_CANNOT_MANAGE_TAGS: 403,
       INVALID_TITLE: 400,
       INVALID_CONTENT: 400,
       POST_NOT_FOUND: 404,
+      TAG_ALREADY_EXISTS: 409,
     };
     return statusMap[code] || 400;
   }
