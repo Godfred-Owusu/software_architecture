@@ -23,19 +23,20 @@ export class SQLiteTagRepository implements TagRepository {
   }
 
   // 2. Find a Tag by ID and turn it back into a Domain Entity
-  async findById(id: string): Promise<TagEntity | null> {
+  // Changed to return undefined
+  async findById(id: string): Promise<TagEntity | undefined> {
     const ormTag = await this.ormRepository.findOne({ where: { id } });
-    if (!ormTag) return null;
+    if (!ormTag) return undefined;
 
     return TagEntity.reconstitute(ormTag.id, ormTag.name, ormTag.createdAt);
   }
 
-  // 3. Find a Tag by its Name
-  async findByName(name: string): Promise<TagEntity | null> {
+  // Changed to return undefined
+  async findByName(name: string): Promise<TagEntity | undefined> {
     const ormTag = await this.ormRepository.findOne({
       where: { name: name.toLowerCase() },
     });
-    if (!ormTag) return null;
+    if (!ormTag) return undefined;
 
     return TagEntity.reconstitute(ormTag.id, ormTag.name, ormTag.createdAt);
   }
