@@ -1,4 +1,4 @@
-import { TagEntity } from '../entities/tag.entity';
+import { TagEntity } from '../entitties/tag.entity';
 
 export abstract class TagRepository {
   abstract save(tag: TagEntity): Promise<void>;

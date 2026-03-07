@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SQLitePostEntity } from '../../posts/infrastructure/entities/post.sqlite.entity';
 import { SQLiteUserEntity } from '../../users/infrastructure/entities/user.sqlite.entity';
-import { SQLiteTagEntity } from 'src/modules/posts/infrastructure/entities/tag.sqlite.entity';
+import { SQLiteTagEntity } from 'src/modules/tags/infrastructure/entities/tag.sqlite.entity';
 
 @Module({
   imports: [

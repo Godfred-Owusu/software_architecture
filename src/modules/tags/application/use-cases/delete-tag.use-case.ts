@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TagRepository } from '../../domain/repositories/tag.repository';
 import { UserEntity } from '../../../users/domain/entities/user.entity';
 import { TagNotFoundException } from '../../domain/exceptions/tag-not-found.exception';
-import { UserCannotManageTagsException } from '../../domain/exceptions/user-cannot-manage-tags.exception';
+import { UserCannotManageTagsException } from '../../../posts/domain/exceptions/user-cannot-manage-tags.exception';
 
 @Injectable()
 export class DeleteTagUseCase {

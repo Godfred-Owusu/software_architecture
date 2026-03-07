@@ -26,7 +26,7 @@ import { DeleteTagUseCase } from '../../application/use-cases/delete-tag.use-cas
 
 import { CreateTagDto } from '../../application/dtos/create-tag.dto';
 import { UpdateTagDto } from '../../application/dtos/update-tag.dto';
-import { InvalidTagNameException } from '../../domain/value-objects/tag-name';
+import { InvalidTagNameException } from '../../domain/values-objects/tag-name.value-object';
 
 @ApiTags('tags')
 @Controller('tags')
@@ -50,7 +50,7 @@ export class TagsController {
     const tag = await this.createTagUseCase.execute(dto.name, user);
     return {
       id: tag.id,
-      name: tag.name.getValue(),
+      name: tag.name.toString(),
       createdAt: tag.createdAt,
     };
   }
@@ -63,7 +63,7 @@ export class TagsController {
     return {
       tags: tags.map((tag) => ({
         id: tag.id,
-        name: tag.name.getValue(),
+        name: tag.name.toString(),
         createdAt: tag.createdAt,
       })),
     };
@@ -91,7 +91,7 @@ export class TagsController {
     const tag = await this.updateTagUseCase.execute(id, dto.name, user);
     return {
       id: tag.id,
-      name: tag.name.getValue(),
+      name: tag.name.toString(),
       createdAt: tag.createdAt,
     };
   }

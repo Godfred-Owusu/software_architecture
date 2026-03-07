@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { TagRepository } from '../../domain/repositories/tag.repository';
-import { TagEntity } from '../../domain/entities/tag.entity';
+import { TagEntity } from '../../domain/entitties/tag.entity';
 import { UserEntity } from '../../../users/domain/entities/user.entity';
 import { TagNotFoundException } from '../../domain/exceptions/tag-not-found.exception';
 import { TagAlreadyExistsException } from '../../domain/exceptions/tag-already-exists.exception';
-import { UserCannotManageTagsException } from '../../domain/exceptions/user-cannot-manage-tags.exception';
+import { UserCannotManageTagsException } from '../../../posts/domain/exceptions/user-cannot-manage-tags.exception';
 
 @Injectable()
 export class UpdateTagUseCase {
@@ -27,7 +27,7 @@ export class UpdateTagUseCase {
     }
 
     // 3. If the name is changing, check for duplicates
-    if (tag.name.getValue() !== newName.toLowerCase()) {
+    if (tag.name.toString() !== newName.toLowerCase()) {
       const existingTag = await this.tagRepository.findByName(newName);
       if (existingTag) {
         throw new TagAlreadyExistsException(newName);

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { TagName } from '../value-objects/tag-name';
+import { TagName } from '../values-objects/tag-name.value-object';
 
 export class TagEntity {
   private constructor(

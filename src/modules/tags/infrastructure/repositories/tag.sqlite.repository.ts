@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TagEntity } from '../../domain/entities/tag.entity';
+import { TagEntity } from '../../domain/entitties/tag.entity';
 import { TagRepository } from '../../domain/repositories/tag.repository';
 import { SQLiteTagEntity } from '../entities/tag.sqlite.entity';
 
@@ -16,7 +16,7 @@ export class SQLiteTagRepository implements TagRepository {
   async save(tag: TagEntity): Promise<void> {
     const ormTag = this.ormRepository.create({
       id: tag.id,
-      name: tag.name.getValue(), // Extract the raw string from the Value Object
+      name: tag.name.toString(), // Extract the raw string from the Value Object
       createdAt: tag.createdAt,
     });
     await this.ormRepository.save(ormTag);
