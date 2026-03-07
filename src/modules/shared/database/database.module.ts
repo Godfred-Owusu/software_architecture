@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SQLitePostEntity } from '../../posts/infrastructure/entities/post.sqlite.entity';
 import { SQLiteUserEntity } from '../../users/infrastructure/entities/user.sqlite.entity';
+import { SQLiteTagEntity } from 'src/modules/posts/infrastructure/entities/tag.sqlite.entity';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { SQLiteUserEntity } from '../../users/infrastructure/entities/user.sqlit
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: configService.get<string>('DATABASE_URL'),
-        entities: [SQLitePostEntity, SQLiteUserEntity],
+        entities: [SQLitePostEntity, SQLiteUserEntity, SQLiteTagEntity],
         synchronize: true,
       }),
     }),

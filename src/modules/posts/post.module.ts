@@ -10,14 +10,31 @@ import { PostRepository } from './domain/repositories/post.repository';
 import { PostController } from './infrastructure/controllers/post.controller';
 // import { InMemoryPostRepository } from './infrastructure/repositories/post.in-memory.repository';
 import { SQLitePostRepository } from './infrastructure/repositories/post.sqlite.repository';
+import { SQLiteTagRepository } from './infrastructure/repositories/tag.sqlite.repository';
+import { TagRepository } from './domain/repositories/tag.repository';
+import { CreateTagUseCase } from './application/use-cases/create-tag.use-case';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SQLiteTagEntity } from './infrastructure/entities/tag.sqlite.entity';
+import { UpdateTagUseCase } from './application/use-cases/update-tag.use-case';
+import { DeleteTagUseCase } from './application/use-cases/delete-tag.use-case';
+import { GetAllTagsUseCase } from './application/use-cases/get-all-tags.use-case';
+import { TagsController } from './infrastructure/controllers/tags.controller';
 
 @Module({
-  imports: [AuthModule, LoggingModule],
-  controllers: [PostController],
+  imports: [
+    AuthModule,
+    LoggingModule,
+    TypeOrmModule.forFeature([SQLiteTagEntity]),
+  ],
+  controllers: [PostController, TagsController],
   providers: [
     {
       provide: PostRepository,
       useClass: SQLitePostRepository,
+    },
+    {
+      provide: TagRepository,
+      useClass: SQLiteTagRepository,
     },
 
     CreatePostUseCase,
@@ -25,6 +42,10 @@ import { SQLitePostRepository } from './infrastructure/repositories/post.sqlite.
     DeletePostUseCase,
     GetPostsUseCase,
     GetPostByIdUseCase,
+    CreateTagUseCase,
+    UpdateTagUseCase,
+    DeleteTagUseCase,
+    GetAllTagsUseCase,
   ],
 })
 export class PostModule {}
