@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -18,6 +19,9 @@ import { DeletePostUseCase } from '../../application/use-cases/delete-post.use-c
 import { GetPostByIdUseCase } from '../../application/use-cases/get-post-by-id.use-case';
 import { GetPostsUseCase } from '../../application/use-cases/get-posts.use-case';
 import { UpdatePostUseCase } from '../../application/use-cases/update-post.use-case';
+import { AddTagToPostUseCase } from '../../application/use-cases/add-tag-to-post.use-case';
+import { RemoveTagFromPostUseCase } from '../../application/use-cases/remove-tag-from-post.use-case';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('posts')
 export class PostController {
@@ -27,6 +31,8 @@ export class PostController {
     private readonly deletePostUseCase: DeletePostUseCase,
     private readonly getPostsUseCase: GetPostsUseCase,
     private readonly getPostByIdUseCase: GetPostByIdUseCase,
+    private readonly addTagToPostUseCase: AddTagToPostUseCase,
+    private readonly removeTagFromPostUseCase: RemoveTagFromPostUseCase,
   ) {}
 
   @Get()
@@ -70,5 +76,49 @@ export class PostController {
   @Delete(':id')
   public async deletePost(@Param('id') id: string) {
     return this.deletePostUseCase.execute(id);
+  }
+
+  @Post(':id/tags/:tagId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Add a tag to a post (Author or Admin only)' })
+  @ApiResponse({ status: 201, description: 'Tag successfully added to post' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden: Not the author or admin',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found: Post or Tag does not exist',
+  })
+  async addTag(
+    @Param('id') postId: string,
+    @Param('tagId') tagId: string,
+    @Requester() user: UserEntity,
+  ) {
+    await this.addTagToPostUseCase.execute(postId, tagId, user);
+  }
+
+  @Delete(':id/tags/:tagId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(204) // 204 No Content is standard for DELETE requests
+  @ApiOperation({ summary: 'Remove a tag from a post (Author or Admin only)' })
+  @ApiResponse({
+    status: 204,
+    description: 'Tag successfully removed from post',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden: Not the author or admin',
+  })
+  @ApiResponse({ status: 404, description: 'Not Found: Post does not exist' })
+  async removeTag(
+    @Param('id') postId: string,
+    @Param('tagId') tagId: string,
+    @Requester() user: UserEntity,
+  ) {
+    await this.removeTagFromPostUseCase.execute(postId, tagId, user);
   }
 }
