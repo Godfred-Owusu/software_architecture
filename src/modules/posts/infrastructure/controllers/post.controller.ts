@@ -81,9 +81,9 @@ export class PostController {
   @Post(':id/tags/:tagId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiOperation({ summary: 'Add a tag to a post (Author or Admin only)' })
-  @ApiResponse({ status: 201, description: 'Tag successfully added to post' })
+  @ApiResponse({ status: 200, description: 'Tag successfully added to post' }) // Updated to 200
   @ApiResponse({
     status: 403,
     description: 'Forbidden: Not the author or admin',
@@ -97,9 +97,8 @@ export class PostController {
     @Param('tagId') tagId: string,
     @Requester() user: UserEntity,
   ) {
-    await this.addTagToPostUseCase.execute(postId, tagId, user);
+    return await this.addTagToPostUseCase.execute(postId, tagId, user);
   }
-
   @Delete(':id/tags/:tagId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

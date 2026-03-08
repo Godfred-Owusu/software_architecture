@@ -1,6 +1,8 @@
 import { v4 } from 'uuid';
 import { PostContent } from '../value-objects/post-content.value-object';
 import { PostTitle } from '../value-objects/post-title.value-object';
+import { TagAlreadyAttachedException } from '../exceptions/tag-already-attached.exception';
+import { TagNotAttachedException } from '../exceptions/tag-not-attached.exception';
 
 export type PostStatus = 'draft' | 'waiting' | 'accepted' | 'rejected';
 
@@ -39,13 +41,18 @@ export class PostEntity {
   }
 
   public addTag(tagId: string): void {
-    if (!this._tags.includes(tagId)) {
-      this._tags.push(tagId);
+    if (this._tags.includes(tagId)) {
+      throw new TagAlreadyAttachedException();
     }
+    this._tags.push(tagId);
   }
 
   // Behavior to remove a tag
   public removeTag(tagId: string): void {
+    if (!this._tags.includes(tagId)) {
+      // 👇 Throw the domain error! 👇
+      throw new TagNotAttachedException();
+    }
     this._tags = this._tags.filter((id) => id !== tagId);
   }
 
