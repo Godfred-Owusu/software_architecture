@@ -9,6 +9,7 @@ export class PostEntity {
   private _content: PostContent;
   private _authorId: string;
   private _status: PostStatus;
+  private _tags: string[] = [];
 
   private constructor(
     readonly id: string,
@@ -16,11 +17,13 @@ export class PostEntity {
     content: PostContent,
     authorId: string,
     status: PostStatus,
+    tags?: string[],
   ) {
     this._title = title;
     this._content = content;
     this._authorId = authorId;
     this._status = status;
+    this._tags = tags || [];
   }
 
   public get status() {
@@ -31,6 +34,21 @@ export class PostEntity {
     return this._authorId;
   }
 
+  public get tags(): string[] {
+    return [...this._tags];
+  }
+
+  public addTag(tagId: string): void {
+    if (!this._tags.includes(tagId)) {
+      this._tags.push(tagId);
+    }
+  }
+
+  // Behavior to remove a tag
+  public removeTag(tagId: string): void {
+    this._tags = this._tags.filter((id) => id !== tagId);
+  }
+
   public static reconstitute(input: Record<string, unknown>) {
     return new PostEntity(
       input.id as string,
@@ -38,6 +56,7 @@ export class PostEntity {
       new PostContent(input.content as string),
       input.authorId as string,
       input.status as PostStatus,
+      (input.tags as string[]) || [],
     );
   }
 
@@ -48,6 +67,7 @@ export class PostEntity {
       content: this._content.toString(),
       status: this._status,
       authorId: this._authorId,
+      tags: this._tags,
     };
   }
 
