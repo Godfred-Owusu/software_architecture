@@ -3,6 +3,7 @@ import { TagRepository } from '../../domain/repositories/tag.repository';
 import { UserEntity } from '../../../users/domain/entities/user.entity';
 import { TagNotFoundException } from '../../domain/exceptions/tag-not-found.exception';
 import { UserCannotManageTagsException } from '../../../posts/domain/exceptions/user-cannot-manage-tags.exception';
+import { TagsPermissions } from '../../domain/premissions/tags-permissions';
 
 @Injectable()
 export class DeleteTagUseCase {
@@ -10,7 +11,7 @@ export class DeleteTagUseCase {
 
   async execute(id: string, user: UserEntity): Promise<void> {
     // 1. Check permissions
-    if (!user.permissions.tags.canManage()) {
+    if (!TagsPermissions.canManage(user)) {
       throw new UserCannotManageTagsException();
     }
 

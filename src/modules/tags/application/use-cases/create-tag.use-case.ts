@@ -4,6 +4,7 @@ import { TagEntity } from '../../domain/entitties/tag.entity';
 import { UserEntity } from '../../../users/domain/entities/user.entity';
 import { TagAlreadyExistsException } from '../../domain/exceptions/tag-already-exists.exception';
 import { UserCannotManageTagsException } from '../../../posts/domain/exceptions/user-cannot-manage-tags.exception';
+import { TagsPermissions } from '../../domain/premissions/tags-permissions';
 
 @Injectable()
 export class CreateTagUseCase {
@@ -11,7 +12,7 @@ export class CreateTagUseCase {
 
   async execute(name: string, user: UserEntity): Promise<TagEntity> {
     // 1. Check permissions (ABAC/RBAC)
-    if (!user.permissions.tags.canManage()) {
+    if (!TagsPermissions.canManage(user)) {
       throw new UserCannotManageTagsException();
     }
 

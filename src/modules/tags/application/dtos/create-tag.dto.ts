@@ -9,5 +9,5 @@ export class CreateTagDto {
     minLength: 2,
     maxLength: 50,
   })
-  name: string;
+  name!: string;
 }

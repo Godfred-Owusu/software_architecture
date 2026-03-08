@@ -61,4 +61,8 @@ export class UserEntity {
   public checkPassword(password: string): boolean {
     return this._password === password;
   }
+
+  public hasRole(expectedRole: UserRole): boolean {
+    return this._role === expectedRole;
+  }
 }

@@ -16,7 +16,7 @@ export class SQLiteTagRepository implements TagRepository {
   async save(tag: TagEntity): Promise<void> {
     const ormTag = this.ormRepository.create({
       id: tag.id,
-      name: tag.name.toString(), // Extract the raw string from the Value Object
+      name: tag.name.toString(),
       createdAt: tag.createdAt,
     });
     await this.ormRepository.save(ormTag);

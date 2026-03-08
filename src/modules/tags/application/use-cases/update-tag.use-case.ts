@@ -5,6 +5,7 @@ import { UserEntity } from '../../../users/domain/entities/user.entity';
 import { TagNotFoundException } from '../../domain/exceptions/tag-not-found.exception';
 import { TagAlreadyExistsException } from '../../domain/exceptions/tag-already-exists.exception';
 import { UserCannotManageTagsException } from '../../../posts/domain/exceptions/user-cannot-manage-tags.exception';
+import { TagsPermissions } from '../../domain/premissions/tags-permissions';
 
 @Injectable()
 export class UpdateTagUseCase {
@@ -16,7 +17,7 @@ export class UpdateTagUseCase {
     user: UserEntity,
   ): Promise<TagEntity> {
     // 1. Check permissions
-    if (!user.permissions.tags.canManage()) {
+    if (!TagsPermissions.canManage(user)) {
       throw new UserCannotManageTagsException();
     }
 
