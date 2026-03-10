@@ -3,6 +3,7 @@ import { PostContent } from '../value-objects/post-content.value-object';
 import { PostTitle } from '../value-objects/post-title.value-object';
 import { TagAlreadyAttachedException } from '../exceptions/tag-already-attached.exception';
 import { TagNotAttachedException } from '../exceptions/tag-not-attached.exception';
+import { PostSlug } from '../value-objects/post-slug.value-object';
 
 export type PostStatus = 'draft' | 'waiting' | 'accepted' | 'rejected';
 
@@ -12,6 +13,7 @@ export class PostEntity {
   private _authorId: string;
   private _status: PostStatus;
   private _tags: string[] = [];
+  private _slug: PostSlug;
 
   private constructor(
     readonly id: string,
@@ -19,12 +21,15 @@ export class PostEntity {
     content: PostContent,
     authorId: string,
     status: PostStatus,
-    tags?: string[],
+    tags: string[] = [],
+    slug: PostSlug,
   ) {
     this._title = title;
     this._content = content;
     this._authorId = authorId;
     this._status = status;
+    this._slug = slug;
+    // this._slug = slug;
     this._tags = tags || [];
   }
 
@@ -38,6 +43,10 @@ export class PostEntity {
 
   public get tags(): string[] {
     return [...this._tags];
+  }
+
+  public get slug(): PostSlug {
+    return this._slug;
   }
 
   public addTag(tagId: string): void {
@@ -64,6 +73,7 @@ export class PostEntity {
       input.authorId as string,
       input.status as PostStatus,
       (input.tags as string[]) || [],
+      PostSlug.create(input.slug as string),
     );
   }
 
@@ -75,6 +85,7 @@ export class PostEntity {
       status: this._status,
       authorId: this._authorId,
       tags: this._tags,
+      slug: this._slug.toString(),
     };
   }
 
@@ -82,6 +93,7 @@ export class PostEntity {
     title: string,
     content: string,
     authorId: string,
+    slug: string,
   ): PostEntity {
     return new PostEntity(
       v4(),
@@ -89,6 +101,8 @@ export class PostEntity {
       new PostContent(content),
       authorId,
       'draft',
+      [],
+      PostSlug.create(slug),
     );
   }
 
@@ -100,5 +114,9 @@ export class PostEntity {
     if (content) {
       this._content = new PostContent(content);
     }
+  }
+
+  public updateSlug(newSlug: string) {
+    this._slug = PostSlug.create(newSlug);
   }
 }
