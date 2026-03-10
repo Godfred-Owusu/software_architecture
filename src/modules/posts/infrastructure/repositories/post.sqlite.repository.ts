@@ -1,23 +1,55 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { PostEntity } from '../../domain/entities/post.entity';
 import { PostRepository } from '../../domain/repositories/post.repository';
 import { SQLitePostEntity } from '../entities/post.sqlite.entity';
+import { UserEntity } from 'src/modules/users/domain/entities/user.entity';
 
 @Injectable()
 export class SQLitePostRepository implements PostRepository {
   constructor(private readonly dataSource: DataSource) {}
 
-  public async getPosts(): Promise<PostEntity[]> {
-    const data = await this.dataSource
-      .getRepository(SQLitePostEntity)
-      .find({ relations: ['tags'] });
+  public async getPosts(
+    tags?: string[],
+    page: number = 1,
+    pageSize: number = 20,
+    user?: UserEntity | null,
+  ): Promise<[PostEntity[], number]> {
+    const skip = (page - 1) * pageSize;
 
-    return data.map((post) => {
-      // Map TypeORM Tag Objects -> Domain String IDs
+    const tagFilter =
+      tags && tags.length > 0 ? { tags: { name: In(tags) } } : {};
+
+    let whereClause: any;
+
+    if (user && (user.hasRole('admin') || user.hasRole('moderator'))) {
+      whereClause = tagFilter;
+    } else if (user) {
+      // Authors see ACCEPTED posts OR their own posts (Draft, Rejected, etc.)
+      whereClause = [
+        { ...tagFilter, status: 'ACCEPTED' },
+        { ...tagFilter, authorId: user.id },
+      ];
+    } else {
+      // Guests (Non-authenticated) ONLY see ACCEPTED posts
+      whereClause = { ...tagFilter, status: 'ACCEPTED' };
+    }
+
+    const [data, total] = await this.dataSource
+      .getRepository(SQLitePostEntity)
+      .findAndCount({
+        where: whereClause,
+        relations: ['tags'],
+        skip: skip,
+        take: pageSize,
+      });
+
+    const entities = data.map((post) => {
       const tagIds = post.tags ? post.tags.map((t) => t.id) : [];
       return PostEntity.reconstitute({ ...post, tags: tagIds });
     });
+
+    return [entities, total];
   }
 
   public async getPostById(id: string): Promise<PostEntity | undefined> {

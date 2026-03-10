@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Requester } from '../../../shared/auth/infrastructure/decorators/requester.decorator';
@@ -21,7 +22,12 @@ import { GetPostsUseCase } from '../../application/use-cases/get-posts.use-case'
 import { UpdatePostUseCase } from '../../application/use-cases/update-post.use-case';
 import { AddTagToPostUseCase } from '../../application/use-cases/add-tag-to-post.use-case';
 import { RemoveTagFromPostUseCase } from '../../application/use-cases/remove-tag-from-post.use-case';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller('posts')
 export class PostController {
@@ -36,10 +42,20 @@ export class PostController {
   ) {}
 
   @Get()
-  public async getPosts() {
-    const posts = await this.getPostsUseCase.execute();
+  async getPosts(
+    @Query('tags') tagsQuery?: string,
+    @Query('page') pageQuery?: string,
+    @Query('pageSize') pageSizeQuery?: string,
+    @Requester() user?: UserEntity,
+  ) {
+    const tagsArray = tagsQuery
+      ? tagsQuery.split(',').map((tag) => tag.trim())
+      : undefined;
+    const page = pageQuery ? parseInt(pageQuery, 10) : 1;
+    const pageSize = pageSizeQuery ? parseInt(pageSizeQuery, 10) : 20;
 
-    return posts.map((p) => p.toJSON());
+    // Pass the user to the Use Case
+    return await this.getPostsUseCase.execute(tagsArray, page, pageSize, user);
   }
 
   @Get(':id')

@@ -1,3 +1,4 @@
+import { UserEntity } from 'src/modules/users/domain/entities/user.entity';
 import { PostEntity, PostStatus } from '../entities/post.entity';
 
 // export type PostModel = {
@@ -18,7 +19,12 @@ export type CreatePostModel = {
 export type UpdatePostModel = Partial<CreatePostModel>;
 
 export abstract class PostRepository {
-  public abstract getPosts(): PostEntity[] | Promise<PostEntity[]>;
+  public abstract getPosts(
+    tags?: string[],
+    page?: number,
+    pageSize?: number,
+    user?: UserEntity | null,
+  ): PostEntity[] | Promise<[PostEntity[], number]>;
 
   public abstract getPostById(
     id: string,

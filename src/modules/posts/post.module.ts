@@ -13,9 +13,10 @@ import { SQLitePostRepository } from './infrastructure/repositories/post.sqlite.
 import { TagsModule } from '../tags/tags.module';
 import { AddTagToPostUseCase } from './application/use-cases/add-tag-to-post.use-case';
 import { RemoveTagFromPostUseCase } from './application/use-cases/remove-tag-from-post.use-case';
+import { UserModule } from '../users/user.module';
 
 @Module({
-  imports: [AuthModule, LoggingModule, TagsModule],
+  imports: [AuthModule, LoggingModule, TagsModule, UserModule],
   controllers: [PostController],
   providers: [
     {
