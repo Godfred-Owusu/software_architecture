@@ -98,8 +98,31 @@ export class SQLitePostRepository implements PostRepository {
       authorId: json.authorId as string,
       status: json.status as any,
       tags: tagObjects,
+
+      slug: json.slug as string,
     });
 
     await this.dataSource.getRepository(SQLitePostEntity).save(ormPost);
+  }
+
+  public async getPostBySlug(slug: string): Promise<PostEntity | null> {
+    const post = await this.dataSource.getRepository(SQLitePostEntity).findOne({
+      where: { slug },
+      relations: ['tags'],
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    const tagIds = post.tags ? post.tags.map((t) => t.id) : [];
+    return PostEntity.reconstitute({ ...post, tags: tagIds });
+  }
+
+  public async existsBySlug(slug: string): Promise<boolean> {
+    const count = await this.dataSource.getRepository(SQLitePostEntity).count({
+      where: { slug },
+    });
+    return count > 0;
   }
 }

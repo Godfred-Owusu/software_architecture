@@ -22,12 +22,15 @@ import { GetPostsUseCase } from '../../application/use-cases/get-posts.use-case'
 import { UpdatePostUseCase } from '../../application/use-cases/update-post.use-case';
 import { AddTagToPostUseCase } from '../../application/use-cases/add-tag-to-post.use-case';
 import { RemoveTagFromPostUseCase } from '../../application/use-cases/remove-tag-from-post.use-case';
+
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
+import { UpdatePostSlugUseCase } from '../../application/use-cases/update-post-slug.use-case';
+import { UpdatePostSlugDto } from '../../application/dtos/update-post-slug.dto';
 
 @Controller('posts')
 export class PostController {
@@ -39,6 +42,7 @@ export class PostController {
     private readonly getPostByIdUseCase: GetPostByIdUseCase,
     private readonly addTagToPostUseCase: AddTagToPostUseCase,
     private readonly removeTagFromPostUseCase: RemoveTagFromPostUseCase,
+    private readonly updatePostSlugUseCase: UpdatePostSlugUseCase,
   ) {}
 
   @Get()
@@ -135,5 +139,17 @@ export class PostController {
     @Requester() user: UserEntity,
   ) {
     await this.removeTagFromPostUseCase.execute(postId, tagId, user);
+  }
+
+  @Patch(':id/slug')
+  @UseGuards(JwtAuthGuard)
+  public async updateSlug(
+    @Param('id') id: string,
+    @Body() body: UpdatePostSlugDto,
+
+    @Requester() user: UserEntity,
+  ) {
+    // 👇 2. Pass 'user' as the 3rd argument!
+    return this.updatePostSlugUseCase.execute(id, body.slug, user);
   }
 }

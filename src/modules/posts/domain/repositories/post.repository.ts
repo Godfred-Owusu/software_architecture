@@ -38,4 +38,8 @@ export abstract class PostRepository {
   ): void | Promise<void>;
 
   public abstract deletePost(id: string): void | Promise<void>;
+
+  public abstract getPostBySlug(slug: string): Promise<PostEntity | null>;
+
+  public abstract existsBySlug(slug: string): Promise<boolean>;
 }

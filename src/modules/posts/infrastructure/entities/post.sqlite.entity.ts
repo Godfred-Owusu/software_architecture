@@ -13,6 +13,9 @@ export class SQLitePostEntity {
   @Column()
   content: string;
 
+  @Column({ unique: true })
+  slug: string;
+
   @Column()
   status: PostStatus;
 

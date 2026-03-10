@@ -85,7 +85,7 @@ export class PostEntity {
       status: this._status,
       authorId: this._authorId,
       tags: this._tags,
-      slug: this._slug.toString(),
+      slug: this._slug ? this._slug.toString() : null,
     };
   }
 
@@ -119,4 +119,17 @@ export class PostEntity {
   public updateSlug(newSlug: string) {
     this._slug = PostSlug.create(newSlug);
   }
+
+  // public toJSON(): Record<string, unknown> {
+  //     return {
+  //       id: this.id,
+  //       title: this._title.toString(),
+  //       content: this._content.toString(),
+  //       status: this._status,
+  //       authorId: this._authorId,
+  //       tags: this._tags,
+  //       // 👇 THIS is where this._slug belongs!
+  //       slug: this._slug ? this._slug.toString() : null,
+  //     };
+  //   }
 }

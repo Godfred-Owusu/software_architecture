@@ -14,6 +14,7 @@ import { TagsModule } from '../tags/tags.module';
 import { AddTagToPostUseCase } from './application/use-cases/add-tag-to-post.use-case';
 import { RemoveTagFromPostUseCase } from './application/use-cases/remove-tag-from-post.use-case';
 import { UserModule } from '../users/user.module';
+import { UpdatePostSlugUseCase } from './application/use-cases/update-post-slug.use-case';
 
 @Module({
   imports: [AuthModule, LoggingModule, TagsModule, UserModule],
@@ -31,6 +32,7 @@ import { UserModule } from '../users/user.module';
     GetPostByIdUseCase,
     AddTagToPostUseCase,
     RemoveTagFromPostUseCase,
+    UpdatePostSlugUseCase,
   ],
 })
 export class PostModule {}
