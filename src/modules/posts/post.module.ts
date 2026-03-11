@@ -36,5 +36,6 @@ import { GetPostBySlugUseCase } from './application/use-cases/get-post-by-slug.u
     UpdatePostSlugUseCase,
     GetPostBySlugUseCase,
   ],
+  exports: [PostRepository],
 })
 export class PostModule {}
