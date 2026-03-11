@@ -7,18 +7,20 @@ import { CommentRepository } from './domain/repositories/comment.repository';
 import { SqliteCommentRepository } from './infrastructure/repositories/sqlite-comment.repository';
 import { PostModule } from '../posts/post.module';
 import { UserModule } from '../users/user.module';
+import { ListCommentsUseCase } from './application/use-cases/list-comments.use-case';
 
 // 👇 Import the modules where you export PostRepository and UserRepository
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([SQLiteCommentEntity]),
-    PostModule, // To access PostRepository
-    UserModule, // To access UserRepository
+    PostModule,
+    UserModule,
   ],
   controllers: [CommentController],
   providers: [
     CreateCommentUseCase,
+    ListCommentsUseCase,
     {
       provide: CommentRepository,
       useClass: SqliteCommentRepository,

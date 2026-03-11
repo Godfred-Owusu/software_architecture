@@ -27,4 +27,37 @@ export class SqliteCommentRepository implements CommentRepository {
 
     await this.repository.save(sqliteComment);
   }
+
+  public async findByPostId(
+    postId: string,
+    page: number,
+    pageSize: number,
+    sortBy: string,
+    order: 'asc' | 'desc',
+  ): Promise<[CommentEntity[], number]> {
+    const skip = (page - 1) * pageSize;
+
+    const [sqliteComments, total] = await this.repository.findAndCount({
+      where: { postId },
+      order: {
+        [sortBy]: order.toUpperCase(), // TypeORM expects 'ASC' or 'DESC'
+      },
+      skip,
+      take: pageSize,
+    });
+
+    // Reconstitute back to Domain Entities
+    const comments = sqliteComments.map((c) =>
+      CommentEntity.reconstitute(
+        c.id,
+        c.postId,
+        c.authorId,
+        c.content,
+        c.createdAt,
+        c.updatedAt,
+      ),
+    );
+
+    return [comments, total];
+  }
 }
