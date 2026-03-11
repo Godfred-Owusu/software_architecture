@@ -31,6 +31,7 @@ import {
 } from '@nestjs/swagger';
 import { UpdatePostSlugUseCase } from '../../application/use-cases/update-post-slug.use-case';
 import { UpdatePostSlugDto } from '../../application/dtos/update-post-slug.dto';
+import { GetPostBySlugUseCase } from '../../application/use-cases/get-post-by-slug.use-case';
 
 @Controller('posts')
 export class PostController {
@@ -43,6 +44,7 @@ export class PostController {
     private readonly addTagToPostUseCase: AddTagToPostUseCase,
     private readonly removeTagFromPostUseCase: RemoveTagFromPostUseCase,
     private readonly updatePostSlugUseCase: UpdatePostSlugUseCase,
+    private readonly getPostBySlugUseCase: GetPostBySlugUseCase,
   ) {}
 
   @Get()
@@ -149,7 +151,14 @@ export class PostController {
 
     @Requester() user: UserEntity,
   ) {
-    // 👇 2. Pass 'user' as the 3rd argument!
     return this.updatePostSlugUseCase.execute(id, body.slug, user);
+  }
+
+  @Get('slug/:slug')
+  public async getBySlug(
+    @Param('slug') slug: string,
+    @Requester() user: UserEntity,
+  ) {
+    return this.getPostBySlugUseCase.execute(slug, user);
   }
 }
