@@ -34,6 +34,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       TAG_ALREADY_ATTACHED: 409,
       SLUG_ALREADY_EXISTS: 409,
       USER_CANNOT_VIEW_POST: 403,
+      POST_NOT_ACCEPTED: 403,
     };
     return statusMap[code] || 400;
   }
