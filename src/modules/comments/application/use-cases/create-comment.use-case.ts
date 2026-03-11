@@ -23,7 +23,7 @@ export class CreateCommentUseCase {
   ): Promise<any> {
     const post = await this.postRepository.getPostById(postId);
     if (!post) {
-      throw new PostNotFoundException(postId); // Update to PostNotFoundException if you have it!
+      throw new PostNotFoundException(postId);
     }
 
     if (post.status.toUpperCase() !== 'ACCEPTED') {
