@@ -35,6 +35,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       SLUG_ALREADY_EXISTS: 409,
       USER_CANNOT_VIEW_POST: 403,
       POST_NOT_ACCEPTED: 403,
+      USER_NOT_FOUND: 404,
     };
     return statusMap[code] || 400;
   }
