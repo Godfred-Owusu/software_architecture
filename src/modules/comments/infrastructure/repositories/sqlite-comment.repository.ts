@@ -60,4 +60,26 @@ export class SqliteCommentRepository implements CommentRepository {
 
     return [comments, total];
   }
+
+  public async findById(id: string): Promise<CommentEntity | null> {
+    const sqliteComment = await this.repository.findOne({ where: { id } });
+    if (!sqliteComment) return null;
+
+    return CommentEntity.reconstitute(
+      sqliteComment.id,
+      sqliteComment.postId,
+      sqliteComment.authorId,
+      sqliteComment.content,
+      sqliteComment.createdAt,
+      sqliteComment.updatedAt,
+    );
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
+  }
+
+  public async countByPostId(postId: string): Promise<number> {
+    return this.repository.count({ where: { postId } });
+  }
 }

@@ -8,6 +8,9 @@ import { SqliteCommentRepository } from './infrastructure/repositories/sqlite-co
 import { PostModule } from '../posts/post.module';
 import { UserModule } from '../users/user.module';
 import { ListCommentsUseCase } from './application/use-cases/list-comments.use-case';
+import { UpdateCommentUseCase } from './application/use-cases/update-comment.use-case';
+import { DeleteCommentUseCase } from './application/use-cases/delete-comment.use-case';
+import { GetCommentCountUseCase } from './application/use-cases/get-comment-count.use-case';
 
 // 👇 Import the modules where you export PostRepository and UserRepository
 
@@ -21,6 +24,9 @@ import { ListCommentsUseCase } from './application/use-cases/list-comments.use-c
   providers: [
     CreateCommentUseCase,
     ListCommentsUseCase,
+    UpdateCommentUseCase,
+    DeleteCommentUseCase,
+    GetCommentCountUseCase,
     {
       provide: CommentRepository,
       useClass: SqliteCommentRepository,

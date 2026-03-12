@@ -36,6 +36,9 @@ export class DomainExceptionFilter implements ExceptionFilter {
       USER_CANNOT_VIEW_POST: 403,
       POST_NOT_ACCEPTED: 403,
       USER_NOT_FOUND: 404,
+      COMMENT_NOT_FOUND: 404,
+      NOT_COMMENT_AUTHOR: 403,
+      CANNOT_DELETE_COMMENT: 403,
     };
     return statusMap[code] || 400;
   }
