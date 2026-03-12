@@ -13,6 +13,10 @@ import { SQLiteUserEntity } from './infrastructure/entities/user.sqlite.entity';
 import { SQLiteSubscriptionEntity } from './infrastructure/entities/sqlite-subscription.entity';
 import { SubscriptionRepository } from '../notifications/domain/repositories/subscription.repository';
 import { SqliteSubscriptionRepository } from './infrastructure/repositories/sqlite-subscription.repository';
+import { FollowUserUseCase } from './application/use-cases/follow-user.use-case';
+import { UnfollowUserUseCase } from './application/use-cases/unfollow-user.use-case';
+import { GetFollowersUseCase } from './application/use-cases/get-followers.use-case';
+import { GetFollowingUseCase } from './application/use-cases/get-following.use-case';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { SqliteSubscriptionRepository } from './infrastructure/repositories/sqli
     DeleteUserUseCase,
     ListUsersUseCase,
     GetUserByIdUseCase,
+    FollowUserUseCase,
+    UnfollowUserUseCase,
+    GetFollowersUseCase,
+    GetFollowingUseCase,
   ],
   exports: [UserRepository],
 })
