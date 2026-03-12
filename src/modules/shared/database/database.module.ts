@@ -15,6 +15,7 @@ import { SQLiteTagEntity } from 'src/modules/tags/infrastructure/entities/tag.sq
         database: configService.get<string>('DATABASE_URL'),
         entities: [SQLitePostEntity, SQLiteUserEntity, SQLiteTagEntity],
         synchronize: true,
+        autoLoadEntities: true,
       }),
     }),
   ],

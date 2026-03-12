@@ -1,3 +1,5 @@
+import { ApprovePostUseCase } from './../../application/use-cases/approve-post.use-case';
+import { SubmitPostUseCase } from './../../application/use-cases/submit-post.use-case';
 import {
   Body,
   Controller,
@@ -32,6 +34,7 @@ import {
 import { UpdatePostSlugUseCase } from '../../application/use-cases/update-post-slug.use-case';
 import { UpdatePostSlugDto } from '../../application/dtos/update-post-slug.dto';
 import { GetPostBySlugUseCase } from '../../application/use-cases/get-post-by-slug.use-case';
+import { RejectPostUseCase } from '../../application/use-cases/reject-post.use-case';
 
 @Controller('posts')
 export class PostController {
@@ -45,6 +48,9 @@ export class PostController {
     private readonly removeTagFromPostUseCase: RemoveTagFromPostUseCase,
     private readonly updatePostSlugUseCase: UpdatePostSlugUseCase,
     private readonly getPostBySlugUseCase: GetPostBySlugUseCase,
+    private readonly submitPostUseCase: SubmitPostUseCase,
+    private readonly rejectPostUseCase: RejectPostUseCase,
+    private readonly approvePostUseCase: ApprovePostUseCase,
   ) {}
 
   @Get()
@@ -88,11 +94,14 @@ export class PostController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   public async updatePost(
     @Param('id') id: string,
-    @Body() input: UpdatePostDto,
+    @Body() body: UpdatePostDto,
+    @Requester() user: UserEntity,
   ) {
-    return this.updatePostUseCase.execute(id, input);
+    // Pass the user into the Use Case
+    return this.updatePostUseCase.execute(id, body, user);
   }
 
   @Delete(':id')
@@ -160,5 +169,35 @@ export class PostController {
     @Requester() user: UserEntity,
   ) {
     return this.getPostBySlugUseCase.execute(slug, user);
+  }
+
+  @Post(':id/reject')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  public async rejectPost(
+    @Param('id') id: string,
+    @Requester() user: UserEntity,
+  ) {
+    return this.rejectPostUseCase.execute(id, user);
+  }
+
+  @Post(':id/submit-for-review')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  public async submitForReview(
+    @Param('id') id: string,
+    @Requester() user: UserEntity,
+  ) {
+    return this.submitPostUseCase.execute(id, user);
+  }
+
+  @Post(':id/approve')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  public async approvePost(
+    @Param('id') id: string,
+    @Requester() user: UserEntity,
+  ) {
+    return this.approvePostUseCase.execute(id, user);
   }
 }

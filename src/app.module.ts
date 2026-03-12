@@ -15,6 +15,7 @@ import { CommentsModule } from './modules/comments/comments.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
         DATABASE_URL: Joi.string().required(),

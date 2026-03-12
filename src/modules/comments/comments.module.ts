@@ -11,6 +11,7 @@ import { ListCommentsUseCase } from './application/use-cases/list-comments.use-c
 import { UpdateCommentUseCase } from './application/use-cases/update-comment.use-case';
 import { DeleteCommentUseCase } from './application/use-cases/delete-comment.use-case';
 import { GetCommentCountUseCase } from './application/use-cases/get-comment-count.use-case';
+import { CommentRootController } from './infrastructure/controller/comment-root.controller';
 
 // 👇 Import the modules where you export PostRepository and UserRepository
 
@@ -20,7 +21,7 @@ import { GetCommentCountUseCase } from './application/use-cases/get-comment-coun
     PostModule,
     UserModule,
   ],
-  controllers: [CommentController],
+  controllers: [CommentController, CommentRootController],
   providers: [
     CreateCommentUseCase,
     ListCommentsUseCase,

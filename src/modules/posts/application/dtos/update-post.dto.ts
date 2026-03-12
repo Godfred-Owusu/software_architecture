@@ -4,4 +4,6 @@ export class UpdatePostDto {
   content?: string;
 
   authorId?: string;
+
+  status?: string;
 }

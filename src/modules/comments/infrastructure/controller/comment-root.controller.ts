@@ -21,8 +21,9 @@ import { DeleteCommentUseCase } from '../../application/use-cases/delete-comment
 import { UpdateCommentUseCase } from '../../application/use-cases/update-comment.use-case';
 import { GetCommentCountUseCase } from '../../application/use-cases/get-comment-count.use-case';
 
-@Controller('posts')
-export class CommentController {
+@Controller('comments')
+@UseGuards(JwtAuthGuard)
+export class CommentRootController {
   constructor(
     private readonly createCommentUseCase: CreateCommentUseCase,
     private readonly listCommentsUseCase: ListCommentsUseCase,
@@ -31,44 +32,21 @@ export class CommentController {
     private readonly getCommentCountUseCase: GetCommentCountUseCase,
   ) {}
 
-  @Get(':postId/comments/count')
-  public async getCommentCount(@Param('postId') postId: string) {
-    return this.getCommentCountUseCase.execute(postId);
-  }
-
-  @Post(':postId/comments')
-  @UseGuards(JwtAuthGuard) // 👈 Business Rule: Only authenticated users can comment
-  public async createComment(
-    @Param('postId') postId: string,
+  @Patch(':id')
+  public async updateComment(
+    @Param('id') id: string,
     @Body() body: CreateCommentDto,
-    @Requester() user: UserEntity,
+    @Requester() jwtPayload: any,
   ) {
-    return this.createCommentUseCase.execute(postId, user.id, body.content);
+    return this.updateCommentUseCase.execute(id, jwtPayload.id, body.content);
   }
 
-  @Get(':postId/comments')
-  // No @UseGuards here because the exam says Authorization is not required to read!
-  public async getComments(
-    @Param('postId') postId: string,
-    @Query('page') page?: string,
-    @Query('pageSize') pageSize?: string,
-    @Query('sortBy') sortBy?: string,
-    @Query('order') order?: 'asc' | 'desc',
+  @Delete(':id')
+  @HttpCode(204)
+  public async deleteComment(
+    @Param('id') id: string,
+    @Requester() jwtPayload: any,
   ) {
-    // Parse query params, applying exam defaults if not provided
-    const parsedPage = page ? parseInt(page, 10) : 1;
-    const parsedPageSize = pageSize
-      ? Math.min(parseInt(pageSize, 10), 100)
-      : 20; // Max 100 per exam rules
-    const validSortBy = sortBy === 'updatedAt' ? 'updatedAt' : 'createdAt';
-    const validOrder = order === 'asc' ? 'asc' : 'desc';
-
-    return this.listCommentsUseCase.execute(
-      postId,
-      parsedPage,
-      parsedPageSize,
-      validSortBy,
-      validOrder,
-    );
+    await this.deleteCommentUseCase.execute(id, jwtPayload.id);
   }
 }

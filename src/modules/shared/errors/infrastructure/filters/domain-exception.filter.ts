@@ -39,6 +39,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
       COMMENT_NOT_FOUND: 404,
       NOT_COMMENT_AUTHOR: 403,
       CANNOT_DELETE_COMMENT: 403,
+      INVALID_STATUS_TRANSITION: 400,
+      CANNOT_SUBMIT_POST: 403,
+      CANNOT_APPROVE_POST: 403,
+      CANNOT_REJECT_POST: 403,
     };
     return statusMap[code] || 400;
   }

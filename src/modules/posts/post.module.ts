@@ -16,6 +16,9 @@ import { RemoveTagFromPostUseCase } from './application/use-cases/remove-tag-fro
 import { UserModule } from '../users/user.module';
 import { UpdatePostSlugUseCase } from './application/use-cases/update-post-slug.use-case';
 import { GetPostBySlugUseCase } from './application/use-cases/get-post-by-slug.use-case';
+import { SubmitPostUseCase } from './application/use-cases/submit-post.use-case';
+import { RejectPostUseCase } from './application/use-cases/reject-post.use-case';
+import { ApprovePostUseCase } from './application/use-cases/approve-post.use-case';
 
 @Module({
   imports: [AuthModule, LoggingModule, TagsModule, UserModule],
@@ -35,6 +38,9 @@ import { GetPostBySlugUseCase } from './application/use-cases/get-post-by-slug.u
     RemoveTagFromPostUseCase,
     UpdatePostSlugUseCase,
     GetPostBySlugUseCase,
+    SubmitPostUseCase,
+    RejectPostUseCase,
+    ApprovePostUseCase,
   ],
   exports: [PostRepository],
 })

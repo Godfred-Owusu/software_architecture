@@ -21,4 +21,13 @@ export class PostPermissions {
 
     return post.status === 'accepted';
   }
+
+  public canSubmitForReview(post: PostEntity): boolean {
+    return post.authorId === this.userId;
+  }
+
+  public canReview(): boolean {
+    // The exam strictly says "Only moderators can approve" / "Only moderators can reject"
+    return this.role === 'moderator' || this.role === 'admin'; // Allow admins as a fallback, but primary is moderator
+  }
 }

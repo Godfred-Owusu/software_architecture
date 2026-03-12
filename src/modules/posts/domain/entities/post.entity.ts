@@ -4,8 +4,14 @@ import { PostTitle } from '../value-objects/post-title.value-object';
 import { TagAlreadyAttachedException } from '../exceptions/tag-already-attached.exception';
 import { TagNotAttachedException } from '../exceptions/tag-not-attached.exception';
 import { PostSlug } from '../value-objects/post-slug.value-object';
+import { InvalidStatusTransitionException } from '../exceptions/invalid-status-transition.exception';
 
-export type PostStatus = 'draft' | 'waiting' | 'accepted' | 'rejected';
+export type PostStatus =
+  | 'draft'
+  | 'waiting'
+  | 'accepted'
+  | 'rejected'
+  | 'pending_review';
 
 export class PostEntity {
   private _title: PostTitle;
@@ -132,4 +138,32 @@ export class PostEntity {
   //       slug: this._slug ? this._slug.toString() : null,
   //     };
   //   }
+
+  public submitForReview(): void {
+    if (this.status !== 'draft') {
+      throw new InvalidStatusTransitionException(
+        'Only drafts can be submitted for review',
+      );
+    }
+    this._status = 'pending_review';
+  }
+
+  public approve(): void {
+    if (this.status !== 'pending_review') {
+      throw new InvalidStatusTransitionException(
+        'Only pending posts can be approved',
+      );
+    }
+    this._status = 'accepted';
+    // this.publishedAt = new Date(); // If your entity tracks this!
+  }
+
+  public reject(): void {
+    if (this._status !== 'pending_review') {
+      throw new InvalidStatusTransitionException(
+        'Only pending posts can be rejected',
+      );
+    }
+    this._status = 'rejected';
+  }
 }
