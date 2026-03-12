@@ -17,13 +17,14 @@ import { FollowUserUseCase } from './application/use-cases/follow-user.use-case'
 import { UnfollowUserUseCase } from './application/use-cases/unfollow-user.use-case';
 import { GetFollowersUseCase } from './application/use-cases/get-followers.use-case';
 import { GetFollowingUseCase } from './application/use-cases/get-following.use-case';
+import { UserSubscriptionController } from './infrastructure/controllers/subscription.controller';
 
 @Module({
   imports: [
     LoggingModule,
     TypeOrmModule.forFeature([SQLiteUserEntity, SQLiteSubscriptionEntity]),
   ],
-  controllers: [UserController],
+  controllers: [UserController, UserSubscriptionController],
   providers: [
     {
       provide: UserRepository,
