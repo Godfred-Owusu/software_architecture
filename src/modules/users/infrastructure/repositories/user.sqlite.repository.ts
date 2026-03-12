@@ -35,4 +35,16 @@ export class SQLiteUserRepository implements UserRepository {
   public async deleteUser(id: string): Promise<void> {
     await this.dataSource.getRepository(SQLiteUserEntity).delete(id);
   }
+
+  public async findByRole(role: string): Promise<UserEntity[]> {
+    const sqliteUsers = await this.dataSource
+      .getRepository(SQLiteUserEntity)
+      .find({
+        where: {
+          role: role as any, // Or 'role as UserRole' if UserRole is accessible here
+        },
+      });
+
+    return sqliteUsers.map((user) => UserEntity.reconstitute({ ...user }));
+  }
 }

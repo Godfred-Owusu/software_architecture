@@ -44,6 +44,6 @@ import { UserSubscriptionController } from './infrastructure/controllers/subscri
     GetFollowersUseCase,
     GetFollowingUseCase,
   ],
-  exports: [UserRepository],
+  exports: [UserRepository, SubscriptionRepository],
 })
 export class UserModule {}

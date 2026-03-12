@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter'; // 👈 Import this
 import { CommentRepository } from '../../domain/repositories/comment.repository';
 import { PostRepository } from '../../../posts/domain/repositories/post.repository';
 import { UserRepository } from '../../../users/domain/repositories/user.repository';
 import { CommentEntity } from '../../domain/entities/comment.entity';
 import { PostNotAcceptedException } from '../../domain/exceptions/post-not-accepted.exception';
-
 import { UserNotFoundException } from '../../../users/domain/exceptions/user-not-found.exception';
 import { PostNotFoundException } from 'src/modules/posts/domain/exceptions/post-not-found.exception';
 
@@ -14,6 +14,7 @@ export class CreateCommentUseCase {
     private readonly commentRepository: CommentRepository,
     private readonly postRepository: PostRepository,
     private readonly userRepository: UserRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async execute(
@@ -37,6 +38,15 @@ export class CreateCommentUseCase {
 
     const comment = CommentEntity.create(postId, authorId, contentStr);
     await this.commentRepository.save(comment);
+
+    this.eventEmitter.emit('comment.created', {
+      commentId: comment.id,
+      postId: post.id,
+      postTitle: post.toJSON().title,
+      postAuthorId: post.authorId,
+      commentAuthorId: author.id,
+      commentAuthorUsername: author.toJSON().username,
+    });
 
     const authorJson = author.toJSON();
 
