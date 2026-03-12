@@ -5,6 +5,9 @@ import { NotificationRepository } from './domain/repositories/notification.repos
 import { SqliteNotificationRepository } from './infrastructure/repositories/sqlite-notification.repository';
 import { NotificationEventHandler } from './application/handlers/notification-event.handler';
 import { UserModule } from '../users/user.module';
+import { GetMyNotificationsUseCase } from './application/use-case/get-my-notifications.use-case';
+import { MarkNotificationAsReadUseCase } from './application/use-case/mark-notification-as-read.use-case';
+import { MarkAllNotificationsAsReadUseCase } from './application/use-case/mark-all-notifications-as-read.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SQLiteNotificationEntity]), UserModule],
@@ -14,6 +17,9 @@ import { UserModule } from '../users/user.module';
       useClass: SqliteNotificationRepository,
     },
     NotificationEventHandler,
+    GetMyNotificationsUseCase,
+    MarkNotificationAsReadUseCase,
+    MarkAllNotificationsAsReadUseCase,
   ],
   exports: [NotificationRepository],
 })
