@@ -44,6 +44,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       CANNOT_APPROVE_POST: 403,
       CANNOT_REJECT_POST: 403,
       CANNOT_FOLLOW_SELF: 400,
+      NOTIFICATION_NOT_FOUND: 404,
     };
     return statusMap[code] || 400;
   }
