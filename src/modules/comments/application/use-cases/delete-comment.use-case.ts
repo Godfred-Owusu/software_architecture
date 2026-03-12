@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CommentRepository } from '../../domain/repositories/comment.repository';
 import { UserRepository } from '../../../users/domain/repositories/user.repository';
-import { PostRepository } from '../../../posts/domain/repositories/post.repository'; // 👈 1. Import PostRepo
+import { PostRepository } from '../../../posts/domain/repositories/post.repository';
 import { CommentNotFoundException } from '../../domain/exceptions/comment-not-found.exception';
 import { NotCommentAuthorException } from '../../domain/exceptions/not-comment-author.exception';
 
@@ -14,7 +14,7 @@ export class DeleteCommentUseCase {
   constructor(
     private readonly commentRepository: CommentRepository,
     private readonly userRepository: UserRepository,
-    private readonly postRepository: PostRepository, // 👈 2. Inject it here
+    private readonly postRepository: PostRepository,
   ) {}
 
   public async execute(commentId: string, userId: string): Promise<void> {
@@ -22,15 +22,13 @@ export class DeleteCommentUseCase {
     const comment = await this.commentRepository.findById(commentId);
     if (!comment) throw new CommentNotFoundException(commentId);
 
-    // 👇 2. Find the Post (Because your business rules require it!)
     const post = await this.postRepository.getPostById(comment.postId);
     if (!post) throw new NotFoundException('Post not found'); // Or your PostNotFoundException
 
-    // 3. Find the real user
+    // 2. Fetch the REAL user from the database
     const user = await this.userRepository.getUserById(userId);
     if (!user) throw new UnauthorizedException('User not found');
 
-    // 👇 4. Pass BOTH the comment and the post to the permission checker!
     if (!user.permissions.comments.canDelete(comment, post)) {
       throw new NotCommentAuthorException();
     }
