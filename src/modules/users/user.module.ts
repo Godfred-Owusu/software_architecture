@@ -8,14 +8,26 @@ import { UpdateUserUseCase } from './application/use-cases/update-user.use-case'
 import { UserRepository } from './domain/repositories/user.repository';
 import { UserController } from './infrastructure/controllers/user.controller';
 import { SQLiteUserRepository } from './infrastructure/repositories/user.sqlite.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SQLiteUserEntity } from './infrastructure/entities/user.sqlite.entity';
+import { SQLiteSubscriptionEntity } from './infrastructure/entities/sqlite-subscription.entity';
+import { SubscriptionRepository } from '../notifications/domain/repositories/subscription.repository';
+import { SqliteSubscriptionRepository } from './infrastructure/repositories/sqlite-subscription.repository';
 
 @Module({
-  imports: [LoggingModule],
+  imports: [
+    LoggingModule,
+    TypeOrmModule.forFeature([SQLiteUserEntity, SQLiteSubscriptionEntity]),
+  ],
   controllers: [UserController],
   providers: [
     {
       provide: UserRepository,
       useClass: SQLiteUserRepository,
+    },
+    {
+      provide: SubscriptionRepository,
+      useClass: SqliteSubscriptionRepository,
     },
     CreateUserUseCase,
     UpdateUserUseCase,
