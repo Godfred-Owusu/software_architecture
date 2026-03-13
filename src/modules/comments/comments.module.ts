@@ -33,5 +33,6 @@ import { CommentRootController } from './infrastructure/controller/comment-root.
       useClass: SqliteCommentRepository,
     },
   ],
+  exports: [CommentRepository],
 })
 export class CommentsModule {}

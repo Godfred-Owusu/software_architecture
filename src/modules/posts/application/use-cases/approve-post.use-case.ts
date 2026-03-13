@@ -25,7 +25,11 @@ export class ApprovePostUseCase {
     // 👇 Use your exact repository method
     await this.postRepository.updatePost(postId, post);
 
-    this.eventEmitter.emit('post.approved', { post });
+    this.eventEmitter.emit('post.pending_review', {
+      postId: post.id,
+      title: post.toJSON().title,
+      authorId: post.authorId,
+    });
 
     return post.toJSON();
   }

@@ -125,4 +125,12 @@ export class SQLitePostRepository implements PostRepository {
     });
     return count > 0;
   }
+
+  public async addTagToPost(postId: string, tagId: string): Promise<void> {
+    await this.dataSource
+      .createQueryBuilder()
+      .relation(SQLitePostEntity, 'tags') // "tags" must be the @ManyToMany field in your TypeORM entity
+      .of(postId)
+      .add(tagId);
+  }
 }

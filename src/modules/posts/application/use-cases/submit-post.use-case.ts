@@ -22,10 +22,13 @@ export class SubmitPostUseCase {
 
     post.submitForReview();
 
-    // 👇 Use your exact repository method
     await this.postRepository.updatePost(postId, post);
 
-    this.eventEmitter.emit('post.pending_review', { post });
+    this.eventEmitter.emit('post.pending_review', {
+      postId: post.id,
+      title: post.toJSON().title,
+      authorId: post.authorId,
+    });
 
     return post.toJSON();
   }

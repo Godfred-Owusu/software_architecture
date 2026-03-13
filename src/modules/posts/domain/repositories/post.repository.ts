@@ -42,4 +42,5 @@ export abstract class PostRepository {
   public abstract getPostBySlug(slug: string): Promise<PostEntity | null>;
 
   public abstract existsBySlug(slug: string): Promise<boolean>;
+  public abstract addTagToPost(postId: string, tagId: string): Promise<void>;
 }

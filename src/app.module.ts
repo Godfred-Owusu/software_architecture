@@ -10,6 +10,8 @@ import { DatabaseModule } from './modules/shared/database/database.module';
 import { UserModule } from './modules/users/user.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { CommentsModule } from './modules/comments/comments.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { SeedService } from './modules/shared/database/seed.service';
 
 @Module({
   imports: [
@@ -31,8 +33,9 @@ import { CommentsModule } from './modules/comments/comments.module';
     UserModule,
     TagsModule,
     CommentsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService],
 })
 export class AppModule {}

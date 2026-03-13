@@ -105,8 +105,10 @@ export class PostController {
   }
 
   @Delete(':id')
-  public async deletePost(@Param('id') id: string) {
-    return this.deletePostUseCase.execute(id);
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  public async deletePost(@Param('id') id: string, @Requester() user: any) {
+    return this.deletePostUseCase.execute(id, user.id);
   }
 
   @Post(':id/tags/:tagId')
