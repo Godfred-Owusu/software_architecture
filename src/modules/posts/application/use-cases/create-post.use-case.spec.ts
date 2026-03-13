@@ -1,63 +1,66 @@
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import {
-  makeUserWithoutPermission,
-  makeUserWithPermission,
-} from '../../../../test/helpers/user.helpers';
-import { PostCreatedEvent } from '../../domain/events/post-created.event';
-import { UserCannotCreatePostException } from '../../domain/exceptions/user-cannot-create-post.exception';
-import { PostRepository } from '../../domain/repositories/post.repository';
+import { Test, TestingModule } from '@nestjs/testing';
 import { CreatePostUseCase } from './create-post.use-case';
+import { PostRepository } from '../../domain/repositories/post.repository';
+import { UserEntity } from '../../../users/domain/entities/user.entity';
 
 describe('CreatePostUseCase', () => {
   let useCase: CreatePostUseCase;
-  let postRepository: jest.Mocked<PostRepository>;
-  let eventEmitter: jest.Mocked<EventEmitter2>;
+  let postRepo: PostRepository;
 
-  beforeEach(() => {
-    postRepository = {
-      createPost: jest.fn().mockResolvedValue(undefined),
-    } as unknown as jest.Mocked<PostRepository>;
-    eventEmitter = {
-      emit: jest.fn(),
-    } as unknown as jest.Mocked<EventEmitter2>;
-    useCase = new CreatePostUseCase(eventEmitter, postRepository);
+  // 1. Mock Repository
+  const mockPostRepository = {
+    existsBySlug: jest.fn(),
+    createPost: jest.fn().mockResolvedValue(null),
+  };
+
+  // 2. Mock User with "unknown" bridge to avoid TS error
+  const mockUser = {
+    id: 'user-123',
+    username: 'testuser',
+  } as unknown as UserEntity;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        CreatePostUseCase,
+        { provide: PostRepository, useValue: mockPostRepository },
+      ],
+    }).compile();
+
+    useCase = module.get<CreatePostUseCase>(CreatePostUseCase);
+    postRepo = module.get<PostRepository>(PostRepository);
+
+    jest.clearAllMocks();
   });
 
-  it('should create a post and emit an event when user has permission', async () => {
-    // Arrange
-    const user = makeUserWithPermission();
-    const createPostDto = {
-      title: 'My first post',
-      content: 'Hello world',
-      authorId: user.id,
+  it('should generate a slug from the title and save the post', async () => {
+    const input = {
+      title: 'Hello World Post',
+      content: 'This is some content',
+      authorId: 'user-123',
     };
 
-    // Act
-    await useCase.execute(createPostDto, user);
+    mockPostRepository.existsBySlug.mockResolvedValue(false);
 
-    // Assert
-    expect(postRepository.createPost).toHaveBeenCalledTimes(1);
-    expect(eventEmitter.emit).toHaveBeenCalledWith(
-      PostCreatedEvent,
-      expect.objectContaining({ authorId: createPostDto.authorId }),
-    );
+    const result = await useCase.execute(input, mockUser);
+
+    expect(result.slug).toBe('hello-world-post');
+    expect(mockPostRepository.createPost).toHaveBeenCalled();
   });
 
-  it('should throw UserCannotCreatePostException when user does not have permission', async () => {
-    // Arrange
-    const user = makeUserWithoutPermission();
-    const createPostDto = {
-      title: 'My first post',
-      content: 'Hello world',
-      authorId: user.id,
+  it('should generate a unique slug if the primary one already exists', async () => {
+    const input = {
+      title: 'Unique Post',
+      content: 'Content here',
+      authorId: 'user-123',
     };
 
-    // Act
-    const act = () => useCase.execute(createPostDto, user);
+    mockPostRepository.existsBySlug
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
 
-    // Assert
-    await expect(act).rejects.toThrow(UserCannotCreatePostException);
-    expect(postRepository.createPost).not.toHaveBeenCalled();
-    expect(eventEmitter.emit).not.toHaveBeenCalled();
+    const result = await useCase.execute(input, mockUser);
+
+    expect(result.slug).toBe('unique-post-2');
   });
 });

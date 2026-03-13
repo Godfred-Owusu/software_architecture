@@ -16,9 +16,8 @@ export class SQLitePostEntity {
   @Column({ unique: true })
   slug: string;
 
-  @Column()
-  status: PostStatus;
-
+  @Column({ name: 'status', type: 'varchar', default: 'pending_review' })
+  status: string;
   @Column()
   authorId: string;
 

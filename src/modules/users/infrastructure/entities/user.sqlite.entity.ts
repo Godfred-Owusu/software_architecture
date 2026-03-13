@@ -9,8 +9,11 @@ export class SQLiteUserEntity {
   @Column()
   username: string;
 
-  @Column()
-  role: UserRole;
+  @Column({
+    type: 'varchar',
+    default: 'reader',
+  })
+  role: string;
 
   @Column()
   password: string;

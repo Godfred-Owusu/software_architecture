@@ -22,7 +22,6 @@ export class ApprovePostUseCase {
 
     post.approve();
 
-    // 👇 Use your exact repository method
     await this.postRepository.updatePost(postId, post);
 
     this.eventEmitter.emit('post.pending_review', {

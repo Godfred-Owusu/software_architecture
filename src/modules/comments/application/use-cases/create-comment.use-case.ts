@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter'; // 👈 Import this
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CommentRepository } from '../../domain/repositories/comment.repository';
 import { PostRepository } from '../../../posts/domain/repositories/post.repository';
 import { UserRepository } from '../../../users/domain/repositories/user.repository';
