@@ -158,11 +158,11 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   public async updateSlug(
     @Param('id') id: string,
-    @Body() body: UpdatePostSlugDto,
+    @Body() updatePostSlugDto: UpdatePostSlugDto,
 
     @Requester() user: UserEntity,
   ) {
-    return this.updatePostSlugUseCase.execute(id, body.slug, user);
+    return this.updatePostSlugUseCase.execute(id, updatePostSlugDto.slug, user);
   }
 
   @Get('slug/:slug')
