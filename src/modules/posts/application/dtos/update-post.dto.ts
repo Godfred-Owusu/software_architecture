@@ -1,3 +1,4 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
@@ -7,10 +8,8 @@ import {
   IsIn,
 } from 'class-validator';
 
-// Define valid statuses to match your PostEntity logic
-const VALID_STATUSES = ['DRAFT', 'PENDING', 'ACCEPTED', 'REJECTED'] as const;
-
 export class UpdatePostDto {
+  @ApiPropertyOptional({ example: 'New Title' })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -18,20 +17,10 @@ export class UpdatePostDto {
   @MaxLength(100)
   title?: string;
 
+  @ApiPropertyOptional({ example: 'New Content' })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(10)
   content?: string;
-
-  @IsOptional()
-  @IsString()
-  @IsIn(VALID_STATUSES, {
-    message: `Status must be one of: ${VALID_STATUSES.join(', ')}`,
-  })
-  status?: string;
-
-  // Note: authorId is omitted here.
-  // We usually don't allow updating the authorId via a DTO
-  // for security reasons. Use the JWT token instead!
 }

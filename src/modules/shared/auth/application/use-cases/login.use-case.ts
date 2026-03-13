@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from '../../domain/repositories/auth.repository';
 import { LoginDto } from '../dtos/login.dto';
@@ -14,7 +14,7 @@ export class LoginUseCase {
     const user = await this.authRepository.findUserByUsername(input.username);
 
     if (!user || !user.checkPassword(input.password)) {
-      throw new Error('Invalid credentials');
+      throw new UnauthorizedException();
     }
 
     const payload = { sub: user.id, ...user.toJSON() };
