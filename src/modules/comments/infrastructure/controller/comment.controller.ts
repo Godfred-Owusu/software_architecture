@@ -26,8 +26,6 @@ export class CommentController {
   constructor(
     private readonly createCommentUseCase: CreateCommentUseCase,
     private readonly listCommentsUseCase: ListCommentsUseCase,
-    private readonly deleteCommentUseCase: DeleteCommentUseCase,
-    private readonly updateCommentUseCase: UpdateCommentUseCase,
     private readonly getCommentCountUseCase: GetCommentCountUseCase,
   ) {}
 
@@ -37,13 +35,17 @@ export class CommentController {
   }
 
   @Post(':postId/comments')
-  @UseGuards(JwtAuthGuard) // 👈 Business Rule: Only authenticated users can comment
+  @UseGuards(JwtAuthGuard)
   public async createComment(
     @Param('postId') postId: string,
-    @Body() body: CreateCommentDto,
+    @Body() createCommentDto: CreateCommentDto,
     @Requester() user: UserEntity,
   ) {
-    return this.createCommentUseCase.execute(postId, user.id, body.content);
+    return this.createCommentUseCase.execute(
+      postId,
+      user.id,
+      createCommentDto.content,
+    );
   }
 
   @Get(':postId/comments')

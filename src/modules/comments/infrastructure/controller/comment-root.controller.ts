@@ -20,6 +20,7 @@ import { ListCommentsUseCase } from '../../application/use-cases/list-comments.u
 import { DeleteCommentUseCase } from '../../application/use-cases/delete-comment.use-case';
 import { UpdateCommentUseCase } from '../../application/use-cases/update-comment.use-case';
 import { GetCommentCountUseCase } from '../../application/use-cases/get-comment-count.use-case';
+import { UpdateCommentDto } from '../../application/dtos/update-comment.dto';
 
 @Controller('comments')
 @UseGuards(JwtAuthGuard)
@@ -35,10 +36,14 @@ export class CommentRootController {
   @Patch(':id')
   public async updateComment(
     @Param('id') id: string,
-    @Body() body: CreateCommentDto,
+    @Body() updateCommentDto: UpdateCommentDto,
     @Requester() jwtPayload: any,
   ) {
-    return this.updateCommentUseCase.execute(id, jwtPayload.id, body.content);
+    return this.updateCommentUseCase.execute(
+      id,
+      jwtPayload.id,
+      updateCommentDto.content!,
+    );
   }
 
   @Delete(':id')
