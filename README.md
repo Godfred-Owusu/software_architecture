@@ -1,79 +1,126 @@
-# Software Architecture Lab - Blog & Notification System
+# Medium-Like API – Feature Extensions
 
-This project implements a robust blog and notification system using **Clean Architecture** and **Domain-Driven Design (DDD)** principles, built with the NestJS framework.
+## Software Architecture Final Project
 
-## 🏗️ Architecture Overview
-
-The project follows the "Screaming Architecture" pattern, where the folder structure reflects the business domain rather than the framework. It is divided into four distinct layers:
-
-1.  **Domain Layer**: The heart of the application. Contains Entities, Value Objects, and Repository interfaces. It is 100% independent of external libraries (except for core logic helpers).
-2.  **Application Layer**: Contains Use Cases and Data Transfer Objects (DTOs). This layer orchestrates the execution of business rules.
-3.  **Infrastructure Layer**: The "details" layer. Contains TypeORM entities, SQLite repositories, and REST Controllers.
-4.  **Shared Layer**: Cross-cutting concerns such as Authentication (JWT), Logging, and Global Exception Filters.
+This project is a robust, production-ready **Medium-like API** extended with advanced features while strictly adhering to **Clean Architecture** and **Domain-Driven Design (DDD)** principles.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Features Implemented
 
-### Prerequisites
+### Tags System
 
-- **Node.js**: v18.x or higher
-- **npm**: v9.x or higher
+Categorize posts with unique, admin-managed tags.
 
-### Installation
+### Post Slugs
+
+SEO-friendly, unique, human-readable URLs for all posts.
+
+### Comments System
+
+Discussion platform for published posts with an advanced authorization matrix.
+
+### Subscriptions & Notifications
+
+Follow authors and receive real-time updates via an **Event-Driven Architecture**.
+
+---
+
+## 🛠️ Prerequisites
+
+- **Node.js:** v18.x or higher
+- **npm:** v9.x or higher
+- **Database:** SQLite (built-in)
+
+---
+
+## 📥 Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repository-url>
+cd m2-s2-software-architecture-lab-main
+```
+
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### Running the Application
+### 3. Environment Variables
+
+Create a .env file in the root directory and add the following:
+
+```env
+JWT_SECRET=your_super_secret_key_here
+PORT=3000
+DATABASE_URL=database.sqlite
+```
+
+### 4. Database Seeding
+
+The project includes a seed script to pre-populate the database with the required users (Admin, Moderator, Writer, Reader) and sample posts.
 
 ```bash
-# Start the server in development mode
+npm run seed
+```
+
+## 🏃 Running the Application
+
+### Development Mode
+
+```bash
 npm run start:dev
 ```
 
-- The API will be available at http://localhost:3000.
+### Build
 
-### 🧪 Testing Suite
+```
+npm run build
+```
 
-The project includes a comprehensive testing strategy covering both unit and integration levels.
+### 📚 API Documentation
 
-##### 1. Unit Tests (Business Rules)
+Once the app is running, you can access the interactive Swagger/OpenAPI documentation at:
 
-These tests validate the Use Cases in isolation by mocking the persistence layer.
+👉 http://localhost:3000/api
 
-```bash
+### 🧪 Testing
+
+The project includes both unit tests for business logic and E2E tests for API integration.
+
+- Unit Tests:
+
+```
 npm run test
 ```
 
-Key Use Cases Tested:
+- Integration (E2E) Tests:
 
-- CreatePost: Ensures titles/content meet length requirements and author roles are validated.
-
-- CreateComment: Validates that comments are only permitted on posts with an accepted status.
-
-- FollowUser: Prevents users from following themselves and handles idempotency.
-
-##### 2. Integration Tests (End-to-End)
-
-These tests perform actual HTTP requests against a live SQLite database to ensure all layers work together.
-
-```bash
+```
 npm run test:e2e
 ```
 
-Test Scenarios:
+- Coverage Report:
 
-Post Management: Creating posts and filtering by tags.
-
-Social Interaction: Commenting on accepted posts and following other users.
-
-Notifications: Retrieving real-time activity alerts for the logged-in user.
-
-3. Coverage Analysis
-   To generate a full HTML coverage report:
-
-```bash
+```
 npm run test:cov
 ```
+
+### 🏗️ Architecture Overview
+
+- This project follows a layered Clean Architecture:
+
+- Domain Layer
+  Entities, Value Objects, and Repository Interfaces.
+
+- Application Layer
+  Use Cases and Domain Event Handlers.
+
+- Infrastructure Layer
+  TypeORM repositories, Controllers, and NestJS Guards.
+
+- Decoupling
+  Modules (Posts, Comments, Notifications) communicate exclusively through Domain Events via EventEmitter2.
