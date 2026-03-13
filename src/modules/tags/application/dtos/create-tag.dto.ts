@@ -1,4 +1,4 @@
-// import { IsString, Length, Matches } from 'class-validator';
+import { IsNotEmpty, IsString, Length, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTagDto {
@@ -8,6 +8,13 @@ export class CreateTagDto {
       'The name of the tag. Must be lowercase, alphanumeric, and may contain hyphens.',
     minLength: 2,
     maxLength: 50,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(2, 50, { message: 'Tag name must be between 2 and 50 characters' })
+  @Matches(/^[a-z0-9-]+$/, {
+    message:
+      'Tag name must be lowercase, alphanumeric, and may contain hyphens only',
   })
   name!: string;
 }
